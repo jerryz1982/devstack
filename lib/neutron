@@ -388,7 +388,11 @@ function is_neutron_enabled {
 function configure_neutron {
     _configure_neutron_common
     iniset_rpc_backend neutron $NEUTRON_CONF DEFAULT
+    Q_API_PASTE_FILE=$NEUTRON_CONF_DIR/api-paste.ini
+    Q_POLICY_FILE=$NEUTRON_CONF_DIR/policy.json
 
+    cp $NEUTRON_DIR/etc/api-paste.ini $Q_API_PASTE_FILE
+    cp $NEUTRON_DIR/etc/policy.json $Q_POLICY_FILE
     # goes before q-svc to init Q_SERVICE_PLUGIN_CLASSES
     if is_service_enabled q-lbaas; then
         _configure_neutron_lbaas
