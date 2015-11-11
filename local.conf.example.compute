@@ -1,31 +1,29 @@
 [[local|localrc]]
 
 disable_service n-net
-disable_service n-cpu
 disable_service ceilometer-acompute
-enable_service q-svc q-meta
 
-NEUTRON_REPO=${NEUTRON_REPO:-http://10.160.5.251:8080/neutron.git}
-#NEUTRON_BRANCH=${NEUTRON_BRANCH:-stable/juno}
+#NEUTRON_REPO=http://10.160.5.251:8080/neutron
+NEUTRON_REPO=file:///home/stack/neutron
+NEUTRON_BRANCH=stable/juno
 REQUIREMENTS_REPO=http://github.com/jerryz1982/requirements.git
 REQUIREMENTS_BRANCH=test_fortinet
 
 Q_PLUGIN=ml2
 ENABLE_TENANT_VLANS=True
-#Q_SERVICE_PLUGIN_CLASSES=router_fortinet
 ML2_L3_PLUGIN=router_fortinet
 Q_ML2_PLUGIN_MECHANISM_DRIVERS='openvswitch,fortinet'
-Q_ML2_PLUGIN_VLAN_TYPE_OPTIONS='network_vlan_ranges=physnet1:1000:1099'
+Q_ML2_PLUGIN_VLAN_TYPE_OPTIONS='network_vlan_ranges=physnet1:1000:2999'
 Q_ML2_PLUGIN_TYPE_DRIVERS=local,flat,vlan,gre,vxlan
 Q_ML2_TENANT_NETWORK_TYPE=vlan
-PROVIDER_NETWORK_TYPE=vlan
-Q_USE_PROVIDER_NETWORKING=True
 
-ENABLE_TENANT_VLANS=True
-TENANT_VLAN_RANGE=1000:1099
+PROVIDER_NETWORK_TYPE=vlan
 PHYSICAL_NETWORK=physnet1
-OVS_PHYSICAL_BRIDGE=br-eth1
-PUBLIC_INTERFACE=eth1
+# CHANGEME: bridge for tenant network br-eth*
+OVS_PHYSICAL_BRIDGE=br-eth2
+Q_USE_PROVIDER_NETWORKING=True
+# CHANGEME: nic for tenant network
+PUBLIC_INTERFACE=eth2
 
 # generic configuration parameters
 
@@ -35,18 +33,16 @@ SERVICE_TOKEN=secretsecret
 SERVICE_PASSWORD=secretsecret
 ADMIN_PASSWORD=secretsecret
 
-MULTI_HOST="True"
 API_RATE_LIMIT="False"
-RECLONE="False"
+RECLONE="True"
 
 # database configuration parameters
 
 DATABASE_TYPE=mysql
 
 # networking configuration parameters
-
-# GUEST_INTERFACE_DEFAULT=eth1
-HOST_IP_IFACE=eth0
+# CHANGEME: control plane nic
+HOST_IP_IFACE=eth1
 
 # logging configuration parameters
 
@@ -59,31 +55,10 @@ SCREEN_LOGDIR=/opt/stack/logs
 # generic configuration parameters (compute)
 
 Q_ML2_PLUGIN_MECHANISM_DRIVERS='openvswitch'
-ENABLED_SERVICES=n-cpu,q-agt,c-vol
+ENABLED_SERVICES=n-cpu,q-agt,c-vol,n-novnc
+# CHANGEME: hostname or ip of controller
 SERVICE_HOST=manager
 MYSQL_HOST=$SERVICE_HOST
 RABBIT_HOST=$SERVICE_HOST
 GLANCE_HOST=$SERVICE_HOST
 
-# configure ceilometer (compute)
-
-#enable_service ceilometer-acompute
-
-
-
-[[post-config|$NOVA_CONF]]
-[DEFAULT]
-flat_interface = eth1
-vlan_interface = eth1
-
-[[post-config|/$Q_PLUGIN_CONF_FILE]]
-[ml2_fortinet]
-address = 10.160.37.95
-username = admin
-password = ''
-int_interface = port24
-ext_interface = port32
-tenant_network_type = vlan
-vlink_vlan_id_range = 4000:4094
-#vlink_ip_range = 169.254.0.1:169.254.10.254
-#vlink_ip_netmask = 255.255.0.0
