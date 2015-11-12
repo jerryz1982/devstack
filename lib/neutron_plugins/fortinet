@@ -45,6 +45,7 @@ function _configure_fortinet_plugin {
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet vlink_vlan_id_range $Q_FORTINET_PLUGIN_VLAN_ID_RANGES
 
     # Setup tenant network bridge
+    sudo ovs-vsctl --no-wait -- --may-exist add-br br-${Q_FORTINET_TENANT_INTERFACE}
     sudo ovs-vsctl --no-wait -- --may-exist add-port br-${Q_FORTINET_TENANT_INTERFACE} ${Q_FORTINET_TENANT_INTERFACE}
     sudo ip link set br-${Q_FORTINET_TENANT_INTERFACE} up
     sudo ip link set ${Q_FORTINET_TENANT_INTERFACE} up
