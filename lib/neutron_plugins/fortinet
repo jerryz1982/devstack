@@ -11,8 +11,6 @@ Q_FORTINET_PLUGIN_FG_IP=${Q_FORTINET_PLUGIN_FG_IP:-}
 Q_FORTINET_PLUGIN_FG_USERNAME=${Q_FORTINET_PLUGIN_FG_USERNAME:-admin}
 # Specify the FG passward for above username
 Q_FORTINET_PLUGIN_FG_PASSWORD=${Q_FORTINET_PLUGIN_FG_PASSWORD:-''}
-# Specify the uVEM integration bridge name
-Q_FORTINET_PLUGIN_INTEGRATION_BRIDGE=${Q_FORTINET_PLUGIN_INTEGRATION_BRIDGE:-br-int}
 # Specify if tunneling is enabled
 Q_FORTINET_PLUGIN_ENABLE_TUNNELING=${Q_FORTINET_PLUGIN_ENABLE_TUNNELING:-True}
 # Specify physical interface of FortiGate for tenant network
@@ -23,6 +21,10 @@ Q_FORTINET_PLUGIN_FG_EXT_INF=${Q_FORTINET_PLUGIN_FG_EXT_INF:-}
 Q_FORTINET_PLUGIN_FG_TENANT_NET_TYPE=${Q_FORTINET_PLUGIN_FG_TENANT_NET_TYPE:-}
 # Specify the VLAN range
 Q_FORTINET_PLUGIN_VLAN_ID_RANGES=${Q_FORTINET_PLUGIN_VLAN_ID_RANGES:-4000:4094}
+# Specify whether hardware npu is available
+Q_FORTINET_PLUGIN_NPU_AVAILABLE=${Q_FORTINET_NPU_AVAILABLE:-}
+# Specify port for tenant network bridge
+Q_FORTINET_TENANT_INTERFACE=${Q_FORTINET_TENANT_INTERFACE:-}
 
 source $TOP_DIR/lib/neutron_plugins/ml2
 
@@ -42,9 +44,10 @@ function _configure_fortinet_plugin {
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet tenant_network_type $Q_FORTINET_PLUGIN_FG_TENANT_NET_TYPE
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet vlink_vlan_id_range $Q_FORTINET_PLUGIN_VLAN_ID_RANGES
 
-    # Setup the integration bridge by calling the ovs_base
-#    OVS_BRIDGE=$Q_FORTINET_PLUGIN_INTEGRATION_BRIDGE
-#    _neutron_ovs_base_setup_bridge $OVS_BRIDGE
+    # Setup tenant network bridge
+    sudo ovs-vsctl --no-wait -- --may-exist add-port br-${Q_FORTINET_TENANT_INTERFACE} ${Q_FORTINET_TENANT_INTERFACE}
+    sudo ip link set br-${Q_FORTINET_TENANT_INTERFACE} up
+    sudo ip link set ${Q_FORTINET_TENANT_INTERFACE} up
 }
 
 save_function neutron_plugin_configure_service _old_neutron_plugin_configure_service

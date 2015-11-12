@@ -257,6 +257,8 @@ function configure_tempest {
     iniset $TEMPEST_CONFIG volume build_timeout $BUILD_TIMEOUT
     iniset $TEMPEST_CONFIG boto build_timeout $BUILD_TIMEOUT
     iniset $TEMPEST_CONFIG boto http_socket_timeout 5
+    iniset $TEMPEST_CONFIG compute ping_timeout 240
+    iniset $TEMPEST_CONFIG compute ping_count 3
 
     # Identity
     iniset $TEMPEST_CONFIG identity uri "$KEYSTONE_SERVICE_PROTOCOL://$KEYSTONE_SERVICE_HOST:5000/v2.0/"
