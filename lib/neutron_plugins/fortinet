@@ -22,7 +22,7 @@ Q_FORTINET_PLUGIN_FG_TENANT_NET_TYPE=${Q_FORTINET_PLUGIN_FG_TENANT_NET_TYPE:-}
 # Specify the VLAN range
 Q_FORTINET_PLUGIN_VLAN_ID_RANGES=${Q_FORTINET_PLUGIN_VLAN_ID_RANGES:-4000:4094}
 # Specify whether hardware npu is available
-Q_FORTINET_PLUGIN_NPU_AVAILABLE=${Q_FORTINET_NPU_AVAILABLE:-}
+Q_FORTINET_PLUGIN_NPU_AVAILABLE=${Q_FORTINET_PLUGIN_NPU_AVAILABLE:-}
 # Specify port for tenant network bridge
 Q_FORTINET_TENANT_INTERFACE=${Q_FORTINET_TENANT_INTERFACE:-}
 
@@ -43,6 +43,7 @@ function _configure_fortinet_plugin {
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet ext_interface $Q_FORTINET_PLUGIN_FG_EXT_INF
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet tenant_network_type $Q_FORTINET_PLUGIN_FG_TENANT_NET_TYPE
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet vlink_vlan_id_range $Q_FORTINET_PLUGIN_VLAN_ID_RANGES
+    iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet npu_available $Q_FORTINET_PLUGIN_NPU_AVAILABLE
 
     # Setup tenant network bridge
     sudo ovs-vsctl --no-wait -- --may-exist add-br br-${Q_FORTINET_TENANT_INTERFACE}
