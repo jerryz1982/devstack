@@ -7,6 +7,8 @@ set +o xtrace
 
 # Specify the FortiGate parameters
 Q_FORTINET_PLUGIN_FG_IP=${Q_FORTINET_PLUGIN_FG_IP:-}
+Q_FORTINET_PLUGIN_FG_PORT=${Q_FORTINET_PLUGIN_FG_PORT:-443}
+Q_FORTINET_PLUGIN_FG_PROTOCOL=${Q_FORTINET_PLUGIN_FG_PROTOCOL:-https}
 # Specify the FG username
 Q_FORTINET_PLUGIN_FG_USERNAME=${Q_FORTINET_PLUGIN_FG_USERNAME:-admin}
 # Specify the FG passward for above username
@@ -37,6 +39,8 @@ function save_function() {
 function _configure_fortinet_plugin {
     # populate the fortinet plugin cfg file with the FG information
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet address $Q_FORTINET_PLUGIN_FG_IP
+    iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet port $Q_FORTINET_PLUGIN_FG_PORT
+    iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet protocol $Q_FORTINET_PLUGIN_FG_PROTOCOL
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet username $Q_FORTINET_PLUGIN_FG_USERNAME
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet password $Q_FORTINET_PLUGIN_FG_PASSWORD
     iniset /$Q_PLUGIN_CONF_FILE ml2_fortinet int_interface $Q_FORTINET_PLUGIN_FG_INT_INF
