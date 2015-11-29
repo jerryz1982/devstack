@@ -38,7 +38,7 @@ create-public-net) publicnetid=`neutron net-show public|grep " id "|awk '{print$
 boot-vm) export netid=`neutron --os-tenant-name $TENANT_NAME net-show $INT_NET \
          |grep " id " |awk '{print$4}'`
          nova --os-tenant-name $TENANT_NAME boot --flavor m1.tiny --image $IMAGE_ID \
-         --nic net-id=$netid --key-name default test1
+         --nic net-id=$netid test1
          ;;
 associate-floatingip) export floatingip=`nova --os-tenant-name $TENANT_NAME floating-ip-create |grep " public " |awk '{print$2}'`
                       nova --os-tenant-name $TENANT_NAME floating-ip-associate test1 $floatingip
