@@ -35,14 +35,12 @@ create-public-net) publicnetid=`neutron net-show public|grep " id "|awk '{print$
                        --gateway $FLOAT_GW --name public_subnet public $FLOAT_CIDR -- --enable-dhcp False
                    fi
                    ;;
-boot-vm) export netid=`neutron --os-tenant-name $TENANT_NAME net-show $INT_NET \
+boot-vm) export portid=`neutron --os-tenant-name $TENANT_NAME port-create $INT_NET \
          |grep " id " |awk '{print$4}'`
+         neutron --os-tenant-name $TENANT_NAME floatingip-create --port-id $portid public 
          nova --os-tenant-name $TENANT_NAME boot --flavor m1.tiny --image $IMAGE_ID \
-         --nic net-id=$netid test1
+         --nic port-id=$portid test1
          ;;
-associate-floatingip) export floatingip=`nova --os-tenant-name $TENANT_NAME floating-ip-create |grep " public " |awk '{print$2}'`
-                      nova --os-tenant-name $TENANT_NAME floating-ip-associate test1 $floatingip
-                      ;; 
 *) echo "Action $1 is not processed"
    ;;
 esac
